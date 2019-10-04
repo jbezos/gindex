@@ -16,6 +16,12 @@ Then you can define `\indexitem` and the like to whatever you want.
 ### Recent changes
 
 ```
+0.2   2019-10-07
+      - Fix - Misplaced R in page_precedence.
+      - Fix - The last item was discarded.
+      - \indexspecial, for literal unformatted entries.
+      - delim_n now set with a macro (\indexpagessep).
+
 0.1   2019-10-01
       - First released version, with the most basic tools.
 ``` 

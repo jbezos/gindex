@@ -25,10 +25,11 @@ group_skip      "}\n%\n\\addindexskip{"
 heading_prefix  "}\n%\n\\addindexheading{"
 heading_suffix  "}\n%\n{"
 preamble        "\\begin{theindex}\\indexpreamble\n\n{"
-postamble       "}\n\\indexpostamble\\end{theindex}"
+postamble       "}\n\\indexflushitem\\indexpostamble\\end{theindex}"
 indent_space    ""
 indent_length   0
-delim_r         "{\\indexrangesep}"
+delim_n         "\\indexpagessep "
+delim_r         "\\indexrangesep "
 
 % Modify to fit your own requirements
 % -----------------------------------
@@ -37,6 +38,5 @@ headings_flag   -1       % Usually redefining \indexheading is better
 actual          '@'
 quote           '"'
 level           '!'
-page_precedence "rnaRA"
+page_precedence "rRnaA"
 keyword         "\\indexentry"
-delim_n         ", "

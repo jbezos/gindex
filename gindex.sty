@@ -7,44 +7,50 @@
 % Repository: https://github.com/jbezos/gindex
 %
 
-\ProvidesPackage{gindex}[2019/10/01 v0.1 Formatting indexes]
+\ProvidesPackage{gindex}[2019/10/07 v0.2 Formatting indexes]
 
 \newcounter{indexsubitems}
 
-\let\esx@save\@empty
+\let\gix@save\@empty
 \let\indexnoitem\@gobbletwo
 
+%------------------------
+
+\let\indexspecial\relax
+
+% #4 current macro, #5 locator
+\def\gix@getspecial#1\indexspecial#2\indexspecial#3\@@#4#5{%
+  \ifx\indexspecial#3\@empty
+    \g@addto@macro\gix@save{#2}%
+  \else
+    \g@addto@macro\gix@save{#4{#1}{#5}}%
+  \fi}
+
+%------------------------
+
 \def\addindexitem#1#2{%
-  \esx@save
+  \gix@save
   \indexnoitem{}{}%
   \setcounter{indexsubitems}{0}%
-  \let\esx@save\@empty
-  \g@addto@macro\esx@save{\indexitem{#1}{#2}}}
-
-\def\addindexskip#1{%
-  \esx@save
-  \indexnoitem{}{}%
-  \setcounter{indexsubitems}{0}%
-  \let\esx@save\@empty
-  \indexskip{#1}}
-
-\def\addindexheading#1{%
-  \esx@save
-  \indexnoitem{}{}%
-  \setcounter{indexsubitems}{0}%
-  \let\esx@save\@empty
-  \indexheading{#1}}
+  \let\gix@save\@empty
+  \gix@getspecial#1\indexspecial\indexspecial\@@\indexitem{#2}}
 
 \def\addindexsubitem#1#2{%
   \stepcounter{indexsubitems}%
-  \g@addto@macro\esx@save{\indexsubitem{#1}{#2}}}
+  \gix@getspecial#1\indexspecial\indexspecial\@@\indexsubitem{#2}}
 
 \def\addindexsubsubitem#1#2{%
-  \g@addto@macro\esx@save{\indexsubsubitem{#1}{#2}}}
+  \gix@getspecial#1\indexspecial\indexspecial\@@\indexsubsubitem{#2}}%
 
 \newcommand\indexitem[2]{\item #1\ifx\\#2\\\else, #2\fi}
 \newcommand\indexsubitem[2]{\subitem #1\ifx\\#2\\\else, #2\fi}
 \newcommand\indexsubsubitem[2]{\subsubitem #1\ifx\\#2\\\else, #2\fi}
+
+\def\indexflushitem{%
+  \gix@save
+  \indexnoitem{}{}}
+
+% ----------------------
 
 \newcommand\indexitemhang[6]{%
   \par\hangindent#2\relax
@@ -58,6 +64,22 @@
     #4#6%
   \fi}
 
+%----------------------
+
+\def\addindexskip#1{%
+  \gix@save
+  \indexnoitem{}{}%
+  \setcounter{indexsubitems}{0}%
+  \let\gix@save\@empty
+  \indexskip{#1}}
+
+\def\addindexheading#1{%
+  \gix@save
+  \indexnoitem{}{}%
+  \setcounter{indexsubitems}{0}%
+  \let\gix@save\@empty
+  \indexheading{#1}}
+
 \ifx\indexspace\@undefined
   \newcommand\indexskip[1]{\par\vskip10\p@\@plus5\p@\@minus3\p@\relax}
 \else
@@ -69,10 +91,13 @@
    \hfil}%
   \nopagebreak}
 
+%---------------------
+
 \let\indexpreamble\relax
 \let\indexpostamble\relax
 
 \def\indexrangesep{-}
+\def\indexpagessep{, }
 
 \endinput
 

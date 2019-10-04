@@ -4,16 +4,16 @@
 % This file may be distributed and/or modified under the conditions of
 % the MIT License. A version can be found at the end of this file.
 %
-% Repository: https://github.com/jbezos/esindex
+% Repository: https://github.com/jbezos/gindex
 %
 
 \documentclass[a4paper]{ltxguide}
 
-\title{\textsf{gindex}\\\large Version 0.1}
+\title{\textsf{gindex}\\\large Version 0.2}
 
 \author{Javier Bezos\\\texttt{http://www.texnia.com}}
 
-\date{2019-10-01}
+\date{2019-10-07}
 
 \raggedright
 \parskip=.8ex
@@ -42,8 +42,9 @@
 {\fontsize{48}{48}\selectfont \color{notes}{gindex}\par}
 {\LARGE Formatting indexes with \LaTeX\par}
 \vspace*{1ex}
-Version 0.1 (2019-10-01)\par
-Javier Bezos (\texttt{http://www.texnia.com})
+Version 0.2 (2019-10-07)\par
+\texttt{https://github.com/jbezos/gindex}\par
+Javier Bezos (\texttt{http://www.texnia.com})\par
 
 \vspace*{6ex}
 
@@ -53,7 +54,7 @@ the format of index entries from within \LaTeX. With standard classes,
 it works out of the box with some predefined values, which you can (and
 in fact should) redefine with |\renewcommand|.
 
-Note it is version 0.1. Changes of the existing features are unlikely
+Note it is version 0.2. Changes of the existing features are unlikely
 to happen (but who knows), but new features, on the other hand, will be
 added in the near future.
 
@@ -127,6 +128,7 @@ with similar purpose.
   \nopagebreak}
 \end{verbatim}
 \item \verb|\indexrangesep|, which by default is |-|.
+\item \verb|\indexpagessep|, which by default is |, |.
 \end{itemize}
 
 Remember to set the style to |gindex| when running \textsf{makeindex}:
@@ -136,6 +138,30 @@ Remember to set the style to |gindex| when running \textsf{makeindex}:
 
 Note also there is no need to run \textsf{makeindex} to fine tune the
 format.
+
+\begin{example}
+ With the following definitions, items and subitems are typeset, as
+ usual, as separate paragraphs. However, if the item has no locator,
+ and there is exactly one subitem, they are joined with a comma as
+ separator (the code is somewhat low-level):
+\begin{verbatim}
+\renewcommand\indexitem[5]{%
+  \def\next{%
+    \indexitemhang{0pt}{20pt}{:}{, }{#1}{#2}%
+    #3{#4}{#5}}%
+  \ifnum\value{indexsubitems}=1\relax
+    \ifx\\#2\\%
+      \def\next{%
+        \indexitemhang{0pt}{20pt}{:}{, }{#1, #4}{#5}}%
+    \fi
+  \fi
+  \next}
+
+\renewcommand\indexsubitem[2]{%
+  \indexitemhang{0pt}{40pt}{}{, }{--- #1}{#2}}
+\end{verbatim}
+  
+\end{example}
 
 \section{Internals}
 
@@ -152,9 +178,8 @@ headings_flag   -1
 actual          '@'
 quote           '"'
 level           '!'
-page_precedence "rnaRA"
+page_precedence "rRnaA"
 keyword         "\\indexentry"
-delim_n         ", "
 \end{verbatim}
 As to |headings_flag|, the recommended way to deal with case is with
 |\indexheading|.
